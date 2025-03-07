@@ -1,0 +1,138 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f8f9fa;
+    color: #333;
+}
+
+/* Navbar */
+.navbar {
+    background:  rgb(89, 118, 163);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    align-items: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-icons .icon-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+    color: white;
+}
+
+.icon-btn:hover {
+    opacity: 0.7;
+}
+
+/* Section Styling */
+.section-container {
+    background: white;
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    color: rgb(89, 118, 163);
+}
+
+/* Live Feed */
+.live-feed {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.live-feed img {
+    width: 80%;
+    border-radius: 10px;
+    border: 2px solid  rgba(218, 39, 39, 0.753);;
+}
+
+/* Buttons */
+.button-group {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.start-btn {
+    background: #28a745;
+    color: white;
+}
+
+.stop-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.upload-btn {
+    background: rgb(67, 15, 15);
+    color: white;
+}
+
+/* Alert Message */
+.alert-text {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+    color: #dc3545;
+}
+
+/* Logs */
+.log-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.log-table th, .log-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+.log-table th {
+    background: rgb(89, 118, 163);
+    color: white;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 10px;
+    background: rgb(89, 118, 163);
+    color: white;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.status {
+    font-weight: bold;
+    color: #d8d337;
+}

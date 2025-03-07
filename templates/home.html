@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threat Detection System</title>
+    <link rel="stylesheet" href="/static/home.css">
+    <script src="/static/script.js" defer></script>
+    <style>
+        /* Flexbox layout for positioning elements */
+        .main-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .left-panel {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .right-panel {
+            flex: 1;
+            border-left: 2px solid #ddd;
+            padding-left: 20px;
+        }
+
+        .live-feed img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .log-table th, .log-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .log-table th {
+            background-color: rgb(89, 118, 163);
+            color: white;
+        }
+
+        /* Processed Image Styling */
+        #processed-container img {
+            width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+
+        /* Settings Dropdown */
+        .settings-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            width: 150px;
+        }
+
+        .settings-menu a {
+            display: block;
+            padding: 8px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .settings-menu a:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Threat Detection System</div>
+            <div class="nav-icons">
+                <button class="icon-btn settings-btn" onclick="toggleSettingsMenu()">⚙️</button>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Settings Menu -->
+    <div id="settings-menu" class="settings-menu">
+        <a href="#" onclick="logout()">Logout</a>
+    </div>
+    
+    <main class="main-container">
+        <!-- Left Panel: Live Surveillance Feed & Upload Section -->
+        <div class="left-panel">
+            <section class="section-container">
+                <h2>Live Surveillance Feed</h2>
+                <div class="live-feed">
+                    <img id="webcam" src="" alt="Live Webcam Feed">
+                </div>
+                <div class="button-group">
+                    <button class="btn start-btn" onclick="startDetection()">Start Detection</button>
+                    <button class="btn stop-btn" onclick="stopDetection()">Stop Detection</button>
+                </div>
+                <p id="alert" class="alert-text"></p>
+            </section>
+
+            <!-- Upload Section -->
+            <section class="section-container">
+                <h2>Upload Image/Video for Analysis</h2>
+                <form id="upload-form">
+                    <input type="file" id="file-input" accept="image/*">
+                    <button type="submit" class="btn upload-btn">Upload</button>
+                </form>
+
+                <!-- Processed image display -->
+                <div id="processed-container"></div>
+            </section>
+        </div>
+
+        <!-- Right Panel: Threat Detection Logs -->
+        <div class="right-panel">
+            <section class="section-container">
+                <h2>Threat Detection Logs</h2>
+                <table class="log-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Threat Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="log-body">
+                        <tr><td colspan="2">No threats detected yet.</td></tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Threat Detection System | System Status: <span class="status">Active</span></p>
+    </footer>
+
+    <script>
+        function toggleSettingsMenu() {
+            const menu = document.getElementById('settings-menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+    
+
+        function startDetection() {
+            fetch("/start_monitoring", { method: "POST" })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Start Detection Response:", data);
+                    document.getElementById("webcam").src = "/video_feed?" + new Date().getTime();
+                    document.getElementById("alert").innerText = "Monitoring started...";
+                    document.getElementById("alert").style.color = "green";
+                })
+                .catch(error => console.error("Error starting detection:", error));
+        }
+
+        function stopDetection() {
+            fetch("/stop_monitoring", { method: "POST" })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    document.getElementById("webcam").src = "";
+                    document.getElementById("alert").innerText = "Monitoring stopped.";
+                    document.getElementById("alert").style.color = "red";
+                });
+        }
+
+        function fetchThreatLogs() {
+            fetch("/get_logs")
+                .then(response => response.json())
+                .then(logs => {
+                    const logBody = document.getElementById("log-body");
+                    logBody.innerHTML = ""; // Clear previous logs
+
+                    if (logs.length === 0) {
+                        logBody.innerHTML = "<tr><td colspan='2'>No threats detected yet.</td></tr>";
+                        return;
+                    }
+
+                    logs.forEach(log => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `<td>${log.timestamp}</td><td>${log.class}</td>`;
+                        logBody.appendChild(row);
+                    });
+                });
+        }
+
+
+        function logout() {
+    localStorage.removeItem('user');
+    window.location.href = '/login';  // Redirect to the login page
+}
+
+        // Fetch logs every 5 seconds
+        setInterval(fetchThreatLogs, 5000);
+    </script>
+
+</body>
+</html>
